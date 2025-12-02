@@ -1,20 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>AI Chat Box</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <meta charset="UTF-8" />
+    <title>VoiceMate-AI</title>
+    <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
+
     <div class="chat-container">
-        <header>🤖 AI Chat Box</header>
+        <header>
+            🤖 VoiceMate-AI 
+            <button onclick="downloadChat()" class="download-btn" title="Download Chat">💾</button>
+            <button onclick="clearChat()" class="clear-btn" title="Clear Chat">🗑️</button>
+        </header>
+        <div class="voice-select">
+            <label style="color:white; font-size:10px;">Voice:</label>
+            <select id="voiceSelect"></select>
+        </div>
+
+        <div class="speed-control">
+            <label style="color:white; font-size:10px;">Speech Speed:</label>
+            <input type="range" id="speedRange" min="0.5" max="2" value="1" step="0.1" />
+            <span id="speedValue" style="color:white;  font-size:10px;">1.0</span>
+        </div>
         <div id="chat-window" class="chat-window"></div>
+
+        <div id="typing-indicator" class="typing-indicator" style="display:none;">AI is typing...</div>
+
+
+
         <div class="input-area">
-            <input id="text-input" type="text" placeholder="Type your message...">
+            <input id="text-input" type="text" placeholder="Type your message..." />
             <button onclick="sendText()">➤</button>
             <button id="mic-btn" onclick="startListening()">🎤</button>
         </div>
     </div>
-    <script src="/static/script.js"></script>
+
+<script src="/static/script.js"></script>
 </body>
 </html>
