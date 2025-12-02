@@ -1,27 +1,147 @@
 from flask import Flask, render_template, request, jsonify
 import datetime
 import wikipedia
+import requests
+import os
 
 app = Flask(__name__)
 
-# Function to process user commands
+
+memory = []
+ai_mode = "normal"   # normal / funny / formal / motivational
+
+
+# modes
+
+def apply_personality(text):
+    global ai_mode
+
+    if ai_mode == "funny":
+        return text + " 😂"
+
+    elif ai_mode == "formal":
+        return "Certainly. " + text
+
+    elif ai_mode == "motivational":
+        return text + " 💪 Stay positive!"
+
+    return text  # normal mode
+
+
+#greet function
+
+def greet_user():
+    hour = datetime.datetime.now().hour
+    if 5 <= hour < 12:
+        greeting = "Good morning!"
+    elif 12 <= hour < 18:
+        greeting = "Good afternoon!"
+    else:
+        greeting = "Good evening!"
+    return {"reply": apply_personality(f"{greeting} I am your AI assistant. How can I help you today?")}
+
+
+
+
+def tell_joke():
+    res = requests.get("https://v2.jokeapi.dev/joke/Any").json()
+    if res["type"] == "single":
+        return {"reply": apply_personality(res["joke"])}
+    return {"reply": apply_personality(f"{res['setup']} ... {res['delivery']}")}
+
+
+#memory function
+
+def remember(text):
+    memory.append(text)
+    return {"reply": apply_personality(f"I'll remember that: '{text}'")}
+
+
+def recall():
+    if not memory:
+        return {"reply": apply_personality("I don't remember anything yet.")}
+    return {"reply": apply_personality("You told me to remember:\n" + "\n".join(memory))}
+
+
+# weather api
+
+def get_weather(city):
+    try:
+        api = f"https://wttr.in/{city}?format=%C+%t"
+        data = requests.get(api).text
+        return {"reply": apply_personality(f"Weather in {city}: {data}")}
+    except:
+        return {"reply": apply_personality("Unable to fetch weather info.")}
+
+
+
+
 def process_command(command):
+    global ai_mode
+    original = command
     command = command.lower()
 
-    # Replace math words with symbols
-    command = command.replace("plus", "+").replace("minus", "-")
-    command = command.replace("times", "*").replace("multiplied by", "*")
-    command = command.replace("divided by", "/").replace("over", "/")
+    # Personality mode switching
+    if "funny mode" in command:
+        ai_mode = "funny"
+        return {"reply": "😂 Funny mode activated!"}
 
-    # ✅ Math calculation
+    if "formal mode" in command:
+        ai_mode = "formal"
+        return {"reply": "Formal mode activated."}
+
+    if "motivational mode" in command:
+        ai_mode = "motivational"
+        return {"reply": "💪 Motivational mode activated!"}
+
+    if "normal mode" in command:
+        ai_mode = "normal"
+        return {"reply": "Back to normal mode."}
+
+    # Greetings
+    if "hello" in command or "hi" in command:
+        return greet_user()
+
+    # Math
+    calc = original.replace("plus", "+").replace("minus", "-").replace("times", "*").replace("x", "*")
     try:
-        if any(char.isdigit() for char in command) and any(op in command for op in "+-*/"):
-            result = eval(command)
-            return {"reply": f"The answer is {result}"}
+        if any(ch.isdigit() for ch in calc) and any(op in calc for op in "+-*/"):
+            result = eval(calc)
+            return {"reply": apply_personality(f"The answer is {result}.")}
     except:
-        return {"reply": "Sorry, I couldn't calculate that."}
+        pass
 
-    # ✅ Unit conversion (simple example)
+
+
+    # Joke
+    if "joke" in command:
+        return tell_joke()
+
+    # Music
+    if "play" in command:
+        song = command.replace("play", "").strip()
+        url = f"https://www.youtube.com/results?search_query={song.replace(' ', '+')}"
+        return {"reply": apply_personality(f"Playing {song} on YouTube"), "url": url}
+
+    # Memory
+    if "remember" in command:
+        return remember(command.replace("remember", "").strip())
+
+    if "what did i tell you" in command or "recall" in command:
+        return recall()
+
+    # Weather
+    if "weather in" in command:
+        city = command.replace("weather in", "").strip()
+        return get_weather(city)
+
+    # Time
+    if "time" in command:
+        now = datetime.datetime.now().strftime("%H:%M:%S")
+        return {"reply": apply_personality(f"The current time is {now}.")}
+
+
+    #units
     if "km to miles" in command:
         try:
             km = float(command.replace("km to miles", "").strip())
@@ -37,36 +157,38 @@ def process_command(command):
             return {"reply": f"{miles} miles is {km} kilometers."}
         except:
             return {"reply": "Please specify the distance in miles."}
-
-    # ✅ Open websites
+        
+    # Open sites
     if "open youtube" in command:
         return {"reply": "Opening YouTube.", "url": "https://www.youtube.com"}
-
     if "open google" in command:
         return {"reply": "Opening Google.", "url": "https://www.google.com"}
 
-    # ✅ Google search
+    # Search
     if "search" in command:
-        search_query = command.replace("search", "").strip()
-        search_url = f"https://www.google.com/search?q={search_query}"
-        return {"reply": f"Searching for {search_query}", "url": search_url}
+        query = command.replace("search", "").strip()
+        return {"reply": f"Searching for {query}", "url": f"https://www.google.com/search?q={query}"}
 
-    # ✅ Tell time
-    if "what is the time" in command:
+    # Time
+    if "time" in command:
         now = datetime.datetime.now().strftime("%H:%M:%S")
-        return {"reply": f"The time is {now}"}
+        return {"reply": f"The current time is {now}."}
 
-    # ✅ Wikipedia summary
+
+
+    # Wikipedia
     if "wikipedia" in command:
         topic = command.replace("wikipedia", "").strip()
         try:
             summary = wikipedia.summary(topic, sentences=2)
-            return {"reply": summary}
+            return {"reply": apply_personality(summary)}
         except:
-            return {"reply": "Sorry, I couldn't find anything on Wikipedia."}
+            return {"reply": apply_personality("Couldn't find that on Wikipedia.")}
 
-    return {"reply": "Sorry, I didn't understand that."}
+    return {"reply": apply_personality("Sorry, I didn’t understand that.")}
 
+
+# ---------------- ROUTES ----------------
 
 @app.route("/")
 def index():
@@ -76,10 +198,11 @@ def index():
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.json
-    user_input = data.get("message")
+    user_input = data.get("message", "")
     response = process_command(user_input)
     return jsonify(response)
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True, use_reloader=False)
