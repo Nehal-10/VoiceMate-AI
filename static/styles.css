@@ -89,3 +89,83 @@ header {
 #text-input{
     background-color: #c0cfe3;
 }
+
+
+
+
+
+
+
+
+
+.download-btn {
+    float: right;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+}
+
+.voice-select {
+    font-size: 10px;
+    /* padding: 5px; */
+    background: #05294B;
+    text-align: center;
+}
+
+.voice-select select {
+    padding: 5px;
+    border-radius: 10px;
+     font-size:10px;
+}
+
+
+.typing-indicator {
+    color: white;
+    font-style: italic;
+    padding: 5px 15px;
+    background: #05294B;
+    font-size: 14px;
+}
+
+.clear-btn {
+    float: right;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.speed-control {
+    background: #05294B;
+    /* padding: 8px 15px; */
+    text-align: center;
+}
+
+.speed-control input[type=range] {
+    vertical-align: middle;
+    width: 150px;
+    margin-left: 10px;
+}
+
+/* Microphone animation */
+#mic-btn.listening {
+    animation: pulse 1s infinite;
+    color: #ff6b6b;
+    transform: scale(1.1);
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 10px 10px rgba(255, 107, 107, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+    }
+}
