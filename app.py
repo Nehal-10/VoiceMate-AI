@@ -53,25 +53,6 @@ def greet_user():
 
 
 
-def get_indian_time():
-    now = datetime.now(ZoneInfo("Asia/Kolkata"))
-    return now.strftime("%H:%M")
-
-def greet_user():
-
-    hour = datetime.now(ZoneInfo("Asia/Kolkata")).hour
-    # hour = datetime.datetime.now().hour
-    if 5 <= hour < 12:
-        greeting = "Good morning!"
-    elif 12 <= hour < 18:
-        greeting = "Good afternoon!"
-    else:
-        greeting = "Good evening!"
-    return {"reply": apply_personality(f"{greeting} I am your AI assistant. How can I help you today?")}
-
-
-
-
 
 
 def tell_joke():
@@ -167,9 +148,15 @@ def process_command(command):
         return get_weather(city)
 
     # Time
+    # if "time" in command:
+    #     now = datetime.datetime.now().strftime("%H:%M:%S")
+    #     return {"reply": apply_personality(f"The current time is {now}.")}
+
     if "time" in command:
-        now = datetime.datetime.now().strftime("%H:%M:%S")
-        return {"reply": apply_personality(f"The current time is {now}.")}
+        utc_now = datetime.utcnow()
+        ist_now = utc_now + timedelta(hours=5, minutes=30)
+        now = ist_now.strftime("%H:%M:%S")
+        return {"reply": apply_personality(f"The current time in India is {now}.")}
 
 
     #units
