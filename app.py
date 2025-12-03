@@ -40,21 +40,38 @@ def apply_personality(text):
 #         greeting = "Good evening!"
 #     return {"reply": apply_personality(f"{greeting} I am your AI assistant. How can I help you today?")}
 
+# def greet_user():
+
+#     # def get_greeting():
+#     ist = pytz.timezone("Asia/Kolkata")
+#     hour = datetime.now(ist).hour
+
+#     # if 5 <= hour < 12:
+#     #     return "Good Morning"
+#     # elif 12 <= hour < 17:
+#     #     return "Good Afternoon"
+#     # elif 17 <= hour < 21:
+#     #     return "Good Evening"
+#     # else:
+#     #     return "Good Night"
+
+#     # hour = datetime.datetime.now().hour
+#     if 5 <= hour < 12:
+#         greeting = "Good morning!"
+#     elif 12 <= hour < 18:
+#         greeting = "Good afternoon!"
+#     else:
+#         greeting = "Good evening!"
+#     return {"reply": apply_personality(f"{greeting} I am your AI assistant. How can I help you today?")}
+
+
+def get_indian_time():
+    now = datetime.now(ZoneInfo("Asia/Kolkata"))
+    return now.strftime("%H:%M")
+
 def greet_user():
 
-    # def get_greeting():
-    ist = pytz.timezone("Asia/Kolkata")
-    hour = datetime.now(ist).hour
-
-    # if 5 <= hour < 12:
-    #     return "Good Morning"
-    # elif 12 <= hour < 17:
-    #     return "Good Afternoon"
-    # elif 17 <= hour < 21:
-    #     return "Good Evening"
-    # else:
-    #     return "Good Night"
-
+    hour = datetime.now(ZoneInfo("Asia/Kolkata")).hour
     # hour = datetime.datetime.now().hour
     if 5 <= hour < 12:
         greeting = "Good morning!"
@@ -63,7 +80,6 @@ def greet_user():
     else:
         greeting = "Good evening!"
     return {"reply": apply_personality(f"{greeting} I am your AI assistant. How can I help you today?")}
-
 
 
 
