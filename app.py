@@ -28,41 +28,29 @@ def apply_personality(text):
     return text  # normal mode
 
 
-#greet function
+def greet_user():
+    utc_now = datetime.utcnow()
+    ist_now = utc_now + timedelta(hours=5, minutes=30)
+    hour = ist_now.hour
 
-# def greet_user():
-#     hour = datetime.datetime.now().hour
-#     if 5 <= hour < 12:
-#         greeting = "Good morning!"
-#     elif 12 <= hour < 18:
-#         greeting = "Good afternoon!"
-#     else:
-#         greeting = "Good evening!"
-#     return {"reply": apply_personality(f"{greeting} I am your AI assistant. How can I help you today?")}
+    # if 5 <= hour < 12:
+    #     return "Good Morning"
+    # elif 12 <= hour < 17:
+    #     return "Good Afternoon"
+    # elif 17 <= hour < 21:
+    #     return "Good Evening"
+    # else:
+    #     return "Good Night"
 
-# def greet_user():
+    # # hour = datetime.datetime.now().hour
+    if 5 <= hour < 12:
+        greeting = "Good morning!"
+    elif 12 <= hour < 18:
+        greeting = "Good afternoon!"
+    else:
+        greeting = "Good evening!"
+    return {"reply": apply_personality(f"{greeting} I am your AI assistant. How can I help you today?")}
 
-#     # def get_greeting():
-#     ist = pytz.timezone("Asia/Kolkata")
-#     hour = datetime.now(ist).hour
-
-#     # if 5 <= hour < 12:
-#     #     return "Good Morning"
-#     # elif 12 <= hour < 17:
-#     #     return "Good Afternoon"
-#     # elif 17 <= hour < 21:
-#     #     return "Good Evening"
-#     # else:
-#     #     return "Good Night"
-
-#     # hour = datetime.datetime.now().hour
-#     if 5 <= hour < 12:
-#         greeting = "Good morning!"
-#     elif 12 <= hour < 18:
-#         greeting = "Good afternoon!"
-#     else:
-#         greeting = "Good evening!"
-#     return {"reply": apply_personality(f"{greeting} I am your AI assistant. How can I help you today?")}
 
 
 def get_indian_time():
